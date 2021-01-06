@@ -44,6 +44,15 @@ module AgentManager
     registered_agents.any? {|a| a[:jsonmodel].to_s == type}
   end
 
+  def self.linked_subjects(id, table, type)
+    Subject
+    .join("#{table}_rlshp", :subject_id => :subject__id)
+    .filter("#{table}_rlshp__#{type}_id".to_sym => id)
+    .select(:subject__id)
+    .distinct
+    .all.map{|row| row[:id]}
+  end
+
 
   module Mixin
 
